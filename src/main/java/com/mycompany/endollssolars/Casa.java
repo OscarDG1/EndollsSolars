@@ -35,7 +35,7 @@ public class Casa {
         this.precioTotal = 0;
         this.aparellsEncesos = aparellsEncesos;
     }
-
+// getters y setters//
     public ArrayList<Aparell> getAparells() {
         return aparells;
 
@@ -81,49 +81,7 @@ public class Casa {
         this.superficieDisponible = superficieDisponible;
     }
 
-    public void offcasa() {
-        for (Aparell aparell : aparells) {
-            aparell.apagar();
-        }
-        interruptor = false;
-    }
-
-    public int potenciaTotal() {
-        int potenciaTotal = 0;
-        for (Placa i : placas) {
-            potenciaTotal = potenciaTotal + i.getPotencia();
-        }
-        return potenciaTotal;
-    }
-
-    public Casa saltarplomos(int potencia) {
-        totalConsum();
-        potenciaTotal();
-        if (totalConsum() > potenciaTotal()) {
-            offcasa();
-            for (Aparell i : aparells) {
-                if (i.getInterruptor() == true) {
-                    i.offaparell();
-                }
-            }
-        }
-        return null;
-    }
-
-    public int totalConsum() {
-        int consum = 0;
-        if (getInterruptor() == false) {
-            return 0;
-        }
-        for (Aparell aparell : aparells) {
-            if (aparell.getInterruptor() == true) {
-                consum = consum + aparell.getPotencia();
-            }
-        }
-        return consum;
-    }
-
-    public boolean getInterruptor() {
+     public boolean getInterruptor() {
         return interruptor;
     }
 
@@ -139,7 +97,53 @@ public class Casa {
     public void setPotenciaMaxima(int potenciaMaxima) {
         this.potenciaMaxima = potenciaMaxima;
     }
+    
+    
+    //metodo para apagar la casa y los aparatos//
+    public void offcasa() {
+        for (Aparell aparell : aparells) {
+            aparell.apagar();
+        }
+        interruptor = false;
+    }
+//metodo para calcular la potencia actual//
+    public int potenciaTotal() {
+        int potenciaTotal = 0;
+        for (Placa i : placas) {
+            potenciaTotal = potenciaTotal + i.getPotencia();
+        }
+        return potenciaTotal;
+    }
+//metodo para ver cuando saltan los plomos//
+    public Casa saltarplomos(int potencia) {
+        totalConsum();
+        potenciaTotal();
+        if (totalConsum() > potenciaTotal()) {
+            offcasa();
+            for (Aparell i : aparells) {
+                if (i.getInterruptor() == true) {
+                    i.offaparell();
+                }
+            }
+        }
+        return null;
+    }
+//metodo que calcula el consumo total//
+    public int totalConsum() {
+        int consum = 0;
+        if (getInterruptor() == false) {
+            return 0;
+        }
+        for (Aparell aparell : aparells) {
+            if (aparell.getInterruptor() == true) {
+                consum = consum + aparell.getPotencia();
+            }
+        }
+        return consum;
+    }
 
+
+//metodo para añadir una placa//
     public String addPlaca(int superficiePlaca, float preu, int potencia) {
 
         if (superficiePlaca <= 0) {
@@ -164,7 +168,7 @@ public class Casa {
         }
 
     }
-
+//metodo para añadir un aparell//
     public String addAparell(String descripcio, int potencia) {
         if (potencia <= 0) {
             return "ERROR: Potència incorrecte. Ha de ser més gran de 0.";
@@ -183,7 +187,7 @@ public class Casa {
             return "ERROR: La casa ja té l'interruptor encès.";
         }
     }
-
+//metodo para apagar un aparell//
     public String offAparell(String descripcio) {
         if (interruptor == true) {
             for (Aparell a : aparells) {
@@ -206,7 +210,7 @@ public class Casa {
             return "ERROR: Han saltat els ploms. La casa ha quedat completament apagada.";
         }
     }
-
+//metodo para conseguir los aparells encendidos//
     public String getAparellsEncesos() {
         if (!interruptor) {
             return "";
@@ -228,7 +232,7 @@ public class Casa {
             return "\n" + "Aparells encesos:" + "\n" + aparellsEncesos;
         }
     }
-
+//metodo para encender un aparell//
     public String onAparell(String descripcio) {
         if (interruptor) {
             int potenciaAparells = 0;

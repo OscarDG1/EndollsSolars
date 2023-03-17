@@ -13,9 +13,9 @@ import java.util.ArrayList;
  * @author Oscar
  */
 public class Main {
-
+// la arraylist de las casas//
     static ArrayList<Casa> casas = new ArrayList<>();
-
+//metodo para añadir una casa//
     public static String addCasa(String nif, String nom, int superficie) {
         for (Casa casa : casas) {
             if (casa.getNif().equals(nif)) {
@@ -30,7 +30,7 @@ public class Main {
             return "ERROR: Superficie incorrecta. Ha de ser més gran de 10.";
         }
     }
-
+//metodo para saber la info del cliente que le demos //
     public static String info(String nif) throws Exception {
         for (Casa casa : casas) {
             if (casa.getNif().equals(nif)) {
@@ -47,7 +47,7 @@ public class Main {
 
         throw new Exception("ERROR: No hi ha cap casa registrada amb aquest nif.");
     }
-
+//metodo de la lista de las casas que hay//
     public static void list() {
         if (casas.isEmpty()) {
             System.out.println("No hi ha cases registrades.");
@@ -80,7 +80,7 @@ public class Main {
             }
         }
     }
-
+//aqui esta todo el codigo ejecutable con su switch y sus casos//
     public static void main(String[] args) throws IOException {
         BufferedReader terminal = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -91,7 +91,7 @@ public class Main {
 
             switch (comando) {
                 case "addcasa":
-                    if (palabra.length != 4) {
+                    if (palabra.length != 4) { //esto sirve para que detecte los argumentos, si te pasas seran parametros incorrectos//
                         System.out.println("ERROR: Número de paràmetres incorrecte." + "\n" + "Ús: addCasa [nif] [nom] [superficie]");
                     } else {
                         System.out.println(addCasa(palabra[1], palabra[2], Integer.parseInt(palabra[3])));
@@ -102,7 +102,7 @@ public class Main {
                         System.out.println("ERROR: Número de paràmetres incorrecte." + "\n" + "Ús: addPlaca [nif] [superficie] [preu] [potència]");
                     } else {
                         boolean encontrado = false;
-                        for (Casa casa : casas) {
+                        for (Casa casa : casas) {  // un bucle para recorrer la lista de casas y coger el dni//
                             if (casa.getNif().equals(palabra[1])) {
                                 encontrado = true;
                                 String placas = casa.addPlaca(Integer.parseInt(palabra[2]), Float.parseFloat(palabra[3]), Integer.parseInt(palabra[4]));

@@ -21,6 +21,8 @@ public class Casa {
     private ArrayList<Placa> placas = new ArrayList<>();
     private ArrayList<Aparell> aparells = new ArrayList<>();
     private int potenciaMaxima;
+    private float precioTotal;
+    private String aparellsEncesos;
 
     //constructor
     public Casa(String nif, String nom, int superficie) {
@@ -30,10 +32,25 @@ public class Casa {
         this.superficieDisponible = superficie;
         this.interruptor = true;
         this.potenciaMaxima = 0;
+        this.precioTotal = 0;
+        this.aparellsEncesos = aparellsEncesos;
+    }
+
+    public ArrayList<Aparell> getAparells() {
+        return aparells;
+
+    }
+
+    public float getPrecioTotal() {
+        return precioTotal;
     }
 
     public String getNif() {
         return nif;
+    }
+
+    public ArrayList<Placa> getPlacas() {
+        return placas;
     }
 
     public void setNif(String nif) {
@@ -55,12 +72,55 @@ public class Casa {
     public void setSuperficie(int superficie) {
         this.superficie = superficie;
     }
-     public int getSuperficieDisponible() {
+
+    public int getSuperficieDisponible() {
         return superficieDisponible;
     }
 
     public void setSuperficieDisponible(int superficieDisponible) {
         this.superficieDisponible = superficieDisponible;
+    }
+
+    public void offcasa() {
+        for (Aparell aparell : aparells) {
+            aparell.apagar();
+        }
+        interruptor = false;
+    }
+
+    public int potenciaTotal() {
+        int potenciaTotal = 0;
+        for (Placa i : placas) {
+            potenciaTotal = potenciaTotal + i.getPotencia();
+        }
+        return potenciaTotal;
+    }
+
+    public Casa saltarplomos(int potencia) {
+        totalConsum();
+        potenciaTotal();
+        if (totalConsum() > potenciaTotal()) {
+            offcasa();
+            for (Aparell i : aparells) {
+                if (i.getInterruptor() == true) {
+                    i.offaparell();
+                }
+            }
+        }
+        return null;
+    }
+
+    public int totalConsum() {
+        int consum = 0;
+        if (getInterruptor() == false) {
+            return 0;
+        }
+        for (Aparell aparell : aparells) {
+            if (aparell.getInterruptor() == true) {
+                consum = consum + aparell.getPotencia();
+            }
+        }
+        return consum;
     }
 
     public boolean getInterruptor() {
@@ -69,6 +129,15 @@ public class Casa {
 
     public void setInterruptor(boolean interruptor) {
         this.interruptor = interruptor;
+
+    }
+
+    public int getPotenciaMaxima() {
+        return potenciaMaxima;
+    }
+
+    public void setPotenciaMaxima(int potenciaMaxima) {
+        this.potenciaMaxima = potenciaMaxima;
     }
 
     public String addPlaca(int superficiePlaca, float preu, int potencia) {
@@ -82,13 +151,13 @@ public class Casa {
         if (potencia <= 0) {
             return "ERROR: Potència incorrecte. Ha de ser més gran de 0.";
         }
-        
 
-        if (superficiePlaca < superficieDisponible) {
+        if (superficiePlaca <= superficieDisponible) {
             superficieDisponible = superficieDisponible - superficiePlaca;
             Placa placa = new Placa(superficiePlaca, preu, potencia);
             placas.add(placa);
             potenciaMaxima = potenciaMaxima + potencia;
+            precioTotal = precioTotal + preu;
             return "OK: Placa afegida a la casa.";
         } else {
             return "ERROR: No hi ha espai disponible per a instal·lar aquesta placa";
@@ -107,6 +176,7 @@ public class Casa {
 
     public String onCasa() {
         if (interruptor == false) {
+            offcasa();
             interruptor = true;
             return "OK: Interruptor general activat.";
         } else {
@@ -137,34 +207,62 @@ public class Casa {
         }
     }
 
+    public String getAparellsEncesos() {
+        if (!interruptor) {
+            return "";
+        }
 
-public String onAparell(String descripcio) {
-        if (interruptor == true) {
+        String aparellsEncesos = "";
+        int potenciaAparells = 0;
+
+        for (Aparell a : aparells) {
+            if (a.isInterruptor()) {
+                aparellsEncesos += "- " + a.getDescripcio() + "\n";
+                potenciaAparells += a.getPotencia();
+            }
+        }
+
+        if (aparellsEncesos.isEmpty()) {
+            return aparellsEncesos;
+        } else {
+            return "\n" + "Aparells encesos:" + "\n" + aparellsEncesos;
+        }
+    }
+
+    public String onAparell(String descripcio) {
+        if (interruptor) {
             int potenciaAparells = 0;
             int potenciaMaxima = 0;
+            String aparellsEncesos = "";
+            int encontrados = 0;
+
             for (Aparell a : aparells) {
                 if (a.getInterruptor()) {
-                    potenciaAparells = a.getPotencia() + potenciaAparells;
+                    potenciaAparells += a.getPotencia();
                 }
             }
+
             for (Placa p : placas) {
-                potenciaMaxima = p.getPotencia() + potenciaMaxima;
+                potenciaMaxima += p.getPotencia();
             }
+
             for (Aparell a : aparells) {
                 if (descripcio.equalsIgnoreCase(a.getDescripcio())) {
                     a.setInterruptor(true);
-                    potenciaAparells = a.getPotencia() + potenciaAparells;
-                    if (potenciaMaxima >= potenciaAparells) {
-                        return "OK: Aparell encès.";
-                    } else {
-                        interruptor = false;
-                        // tenqo que poner los aparells a false? en el caso de que si donde vuelvo
-                        // a recorrer los aparatos
-                        return "ERROR: Han saltat els ploms. La casa ha quedat completament apagada.";
-                    }
+                    potenciaAparells += a.getPotencia();
+                    aparellsEncesos += "- " + a.getDescripcio() + "\n";
+                    encontrados++;
                 }
             }
-            return "ERROR: No hi ha cap aparell registrat amb aquesta descripció a la casa indicada.";
+
+            if (encontrados == 0) {
+                return "ERROR: No hi ha cap aparell registrat amb aquesta descripció a la casa indicada.";
+            } else if (potenciaMaxima >= potenciaAparells) {
+                return "OK: Aparell encès.";
+            } else {
+                interruptor = false;
+                return "ERROR: Han saltat els ploms. La casa ha quedat completament apagada.";
+            }
         } else {
             return "ERROR: No es pot encendre l'aparell. L'interruptor general està apagat.";
         }

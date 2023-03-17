@@ -28,6 +28,13 @@ public class Aparell {
         this.descripcio = descripcio;
     }
 
+    public void apagar() {
+        this.interruptor = false;
+    }
+    public boolean isInterruptor() {
+        return interruptor;
+    }
+
     public boolean getInterruptor() {
         return interruptor;
     }
@@ -44,4 +51,10 @@ public class Aparell {
         this.potencia = potencia;
     }
 
+     public void offaparell() {
+    if (interruptor == true) {
+        this.interruptor = false;
+    }
+     }
+    
 }
